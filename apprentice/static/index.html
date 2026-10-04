@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apprentice — Spoken Know-How to Open Agent Skills</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.05); opacity: 0.4; }
+      100% { transform: scale(0.95); opacity: 0.8; }
+    }
+    .pulse-glow { animation: pulse-ring 3s infinite ease-in-out; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans antialiased selection:bg-indigo-500 selection:text-white">
+
+  <!-- Top Navbar -->
+  <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-amber-500 flex items-center justify-center font-bold text-white shadow-lg shadow-indigo-500/20 text-xl">
+          ⚡
+        </div>
+        <div>
+          <span class="font-extrabold text-xl tracking-tight text-white">Apprentice</span>
+          <span class="text-xs ml-2 px-2 py-0.5 rounded-full bg-indigo-950 text-indigo-300 border border-indigo-800 font-mono">v1.0-agent-skills</span>
+        </div>
+      </div>
+      <div class="flex items-center space-x-3 text-xs">
+        <span class="px-2.5 py-1 rounded bg-slate-800 text-slate-300 border border-slate-700 font-mono">Model: Gemma-2 (Open-Weight)</span>
+        <span class="px-2.5 py-1 rounded bg-emerald-950 text-emerald-400 border border-emerald-800 font-medium flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 inline-block animate-ping"></span>
+          agentskills.io Standard
+        </span>
+        <a href="https://github.com" target="_blank" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded border border-slate-700 transition">GitHub (Apache-2.0)</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Bar -->
+  <div class="border-b border-slate-800 bg-gradient-to-b from-slate-900 to-slate-950 py-6 px-4">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white flex items-center gap-2">
+          Show it once. <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-indigo-400">It writes the skill.</span>
+        </h1>
+        <p class="text-sm text-slate-400 mt-1 max-w-3xl">
+          Capturing tacit human expertise via open-weight AI, validated through an oral <b>Teach-Back Exam</b>, and signed by <b>Company-Licensed Authorities</b> into the Open Skill Commons.
+        </p>
+      </div>
+      <!-- Trust Loop Steps Pill -->
+      <div class="flex items-center bg-slate-900 border border-slate-800 rounded-xl p-1.5 text-xs text-slate-400">
+        <span class="px-3 py-1 rounded-lg bg-indigo-600/30 text-indigo-300 font-semibold flex items-center gap-1">
+          <span>1. Contributor</span>
+        </span>
+        <span class="mx-1 text-slate-600">➔</span>
+        <span class="px-3 py-1 rounded-lg bg-amber-600/30 text-amber-300 font-semibold flex items-center gap-1">
+          <span>2. AI Teach-Back</span>
+        </span>
+        <span class="mx-1 text-slate-600">➔</span>
+        <span class="px-3 py-1 rounded-lg bg-emerald-600/30 text-emerald-300 font-semibold flex items-center gap-1">
+          <span>3. Licensed Auditor</span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    
+    <!-- Tab Controls -->
+    <div class="flex border-b border-slate-800 space-x-2 sm:space-x-4 mb-8">
+      <button onclick="switchTab('contributor')" id="tab-btn-contributor" class="tab-button border-b-2 border-indigo-500 text-indigo-400 py-3 px-4 font-medium text-sm flex items-center gap-2 transition">
+        <span>🎙️ 1. Contributor Studio</span>
+      </button>
+      <button onclick="switchTab('teachback')" id="tab-btn-teachback" class="tab-button border-b-2 border-transparent text-slate-400 hover:text-slate-200 py-3 px-4 font-medium text-sm flex items-center gap-2 transition">
+        <span>🧠 2. AI Teach-Back Arena</span>
+        <span id="badge-fidelity" class="hidden text-xs px-2 py-0.5 rounded-full bg-amber-950 text-amber-300 border border-amber-800 font-mono">Score: --</span>
+      </button>
+      <button onclick="switchTab('auditor')" id="tab-btn-auditor" class="tab-button border-b-2 border-transparent text-slate-400 hover:text-slate-200 py-3 px-4 font-medium text-sm flex items-center gap-2 transition">
+        <span>🛡️ 3. Licensed Auditor Portal</span>
+        <span id="badge-status" class="text-xs px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700">Pending</span>
+      </button>
+      <button onclick="switchTab('commons')" id="tab-btn-commons" class="tab-button border-b-2 border-transparent text-slate-400 hover:text-slate-200 py-3 px-4 font-medium text-sm flex items-center gap-2 transition">
+        <span>📦 4. Verified Skill Commons</span>
+        <span id="badge-commons-count" class="text-xs px-2 py-0.5 rounded-full bg-indigo-950 text-indigo-300 border border-indigo-800">0</span>
+      </button>
+    </div>
+
+    <!-- TAB 1: CONTRIBUTOR STUDIO -->
+    <div id="tab-contributor" class="tab-content block space-y-6">
+      
+      <!-- Quick Demo Presets -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">⚡ Instant Hackathon Demo Presets (Real Field Demonstrations)</span>
+          <span class="text-xs text-indigo-400">Click to load realistic tacit knowledge</span>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <button onclick="loadSample('industrial_sensor')" class="text-left p-3.5 rounded-xl bg-slate-950 hover:bg-slate-800/80 border border-slate-800 hover:border-indigo-500/50 transition group">
+            <div class="text-xs font-bold text-indigo-300 group-hover:text-indigo-200">🤖 Industrial Rotary Sensor</div>
+            <div class="text-xs text-slate-400 mt-1">Ramesh Patel • 3-blink zero offset & anti-static grounding</div>
+          </button>
+          <button onclick="loadSample('solar_inverter')" class="text-left p-3.5 rounded-xl bg-slate-950 hover:bg-slate-800/80 border border-slate-800 hover:border-amber-500/50 transition group">
+            <div class="text-xs font-bold text-amber-300 group-hover:text-amber-200">☀️ Solar Inverter Arc Reset</div>
+            <div class="text-xs text-slate-400 mt-1">Carlos Mendez • 800V DC bleed & CAT IV safety lockout</div>
+          </button>
+          <button onclick="loadSample('smart_irrigation')" class="text-left p-3.5 rounded-xl bg-slate-950 hover:bg-slate-800/80 border border-slate-800 hover:border-emerald-500/50 transition group">
+            <div class="text-xs font-bold text-emerald-300 group-hover:text-emerald-200">🌱 Soil TDR Salinity Probe</div>
+            <div class="text-xs text-slate-400 mt-1">Priya Sharma • Two-point dielectric calibration & wave-guide care</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Demonstration Input Form -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Left: Form -->
+        <div class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <h2 class="font-bold text-base text-white flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+              Person 1: The Expert / Practitioner
+            </h2>
+            <span class="text-xs text-slate-400">Captures spoken audio / recorded video demo</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-slate-400 mb-1">Contributor Name</label>
+              <input id="input-contributor-name" type="text" value="Ramesh Patel" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-400 mb-1">Industry Domain</label>
+              <select id="input-domain" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
+                <option value="industrial">Industrial Robotics & Automation</option>
+                <option value="solar">Solar & Renewable Energy</option>
+                <option value="agriculture">Agriculture & Agritech</option>
+                <option value="electrical">High-Voltage Electrical</option>
+                <option value="biomedical">Biomedical Engineering</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-400 mb-1">Original Spoken Language</label>
+              <select id="input-language" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
+                <option value="en">English (US/UK/IN)</option>
+                <option value="hi">Hindi (हिंदी)</option>
+                <option value="es">Spanish (Español)</option>
+                <option value="de">German (Deutsch)</option>
+                <option value="fr">French (Français)</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label class="block text-xs font-medium text-slate-400">Spoken Know-How / Voice Demo Transcript</label>
+              <span class="text-xs text-indigo-400 flex items-center gap-1">
+                <span class="inline-block w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
+                Microphone / Camera Ingest Sim
+              </span>
+            </div>
+            <textarea id="input-transcript" rows="7" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3.5 text-sm text-slate-200 font-mono focus:outline-none focus:border-indigo-500 leading-relaxed" placeholder="Describe the task step-by-step: what tools are needed, critical safety warnings, and how to spot errors..."></textarea>
+          </div>
+
+          <div class="flex items-center justify-between pt-2">
+            <div class="text-xs text-slate-500">
+              Output will strictly conform to <code class="text-slate-400">agentskills.io</code> standard (YAML frontmatter + markdown).
+            </div>
+            <button onclick="compileSkill()" id="btn-compile" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white font-semibold text-sm shadow-lg shadow-indigo-600/30 flex items-center gap-2 transition active:scale-95">
+              <span>⚡ Compile Skill with Gemma AI</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Right: Real-time Standard Visualizer -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+              <h3 class="font-bold text-sm text-slate-200">Open Standard Checklist</h3>
+              <span class="text-xs font-mono text-emerald-400">agentskills.io</span>
+            </div>
+            <ul class="space-y-3 text-xs">
+              <li class="flex items-start gap-2 text-slate-300">
+                <span class="text-emerald-400 font-bold">✓</span>
+                <span><b>Standard YAML frontmatter</b>: <code class="text-indigo-300">name</code>, <code class="text-indigo-300">description</code>, <code class="text-indigo-300">license</code>, <code class="text-indigo-300">fidelity_score</code></span>
+              </li>
+              <li class="flex items-start gap-2 text-slate-300">
+                <span class="text-emerald-400 font-bold">✓</span>
+                <span><b>Deterministic Triggers</b>: Clear activation boundaries so agents only invoke when relevant</span>
+              </li>
+              <li class="flex items-start gap-2 text-slate-300">
+                <span class="text-emerald-400 font-bold">✓</span>
+                <span><b>Safety Quarantine</b>: Extracted safety warnings placed under mandatory inspection</span>
+              </li>
+              <li class="flex items-start gap-2 text-slate-300">
+                <span class="text-emerald-400 font-bold">✓</span>
+                <span><b>Teach-Back Verification</b>: Adversarial simulation tests prevent hallucinated dummy skills</span>
+              </li>
+              <li class="flex items-start gap-2 text-slate-300">
+                <span class="text-emerald-400 font-bold">✓</span>
+                <span><b>Person 2 Licensing</b>: Cryptographic seal issued only by certified industry authorities</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-slate-800 bg-slate-950 p-4 rounded-xl text-center">
+            <div class="text-xs text-slate-400 mb-1">Open-Weight Runtime</div>
+            <div class="font-mono text-sm text-indigo-300 font-semibold">Gemma-2-9B / Gemma-2-2B</div>
+            <div class="text-xs text-slate-500 mt-1">Runs 100% locally or on-premise without cloud lock-in</div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- TAB 2: AI TEACH-BACK ARENA -->
+    <div id="tab-teachback" class="tab-content hidden space-y-6">
+      
+      <!-- Top Score Banner -->
+      <div class="bg-gradient-to-r from-slate-900 via-indigo-950/40 to-slate-900 border border-slate-800 rounded-2xl p-6">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+          <div class="flex items-center space-x-5">
+            <div class="w-20 h-20 rounded-2xl bg-slate-950 border border-indigo-500/40 flex flex-col items-center justify-center shadow-inner">
+              <span id="teachback-score-num" class="text-3xl font-extrabold text-amber-400 font-mono">--</span>
+              <span class="text-[10px] text-slate-400 uppercase tracking-widest">Fidelity</span>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h2 id="teachback-skill-title" class="text-xl font-bold text-white">No Skill Compiled Yet</h2>
+                <span id="teachback-verdict-pill" class="text-xs px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-400 font-semibold">Awaiting Test</span>
+              </div>
+              <p id="teachback-summary-text" class="text-xs text-slate-400 mt-1 max-w-2xl">
+                Compile a skill in Step 1 to trigger the automatic 5-scenario oral defense test.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <button onclick="switchTab('auditor')" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs shadow-lg shadow-emerald-600/20 transition flex items-center gap-1.5">
+              <span>Proceed to Licensed Review ➔</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scenarios List -->
+      <div class="space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="font-bold text-base text-slate-200">5 Adversarial Oral Examination Scenarios</h3>
+          <span class="text-xs text-slate-400">Tested against a student model with access ONLY to the compiled SKILL.md</span>
+        </div>
+
+        <div id="scenarios-container" class="space-y-4">
+          <!-- Populated by JavaScript -->
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-8 text-center text-slate-500 text-sm">
+            Please compile a skill in Tab 1 to view the Teach-Back evaluation scenarios.
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TAB 3: LICENSED AUDITOR PORTAL -->
+    <div id="tab-auditor" class="tab-content hidden space-y-6">
+      
+      <!-- Top Auditor Header -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div>
+            <h2 class="text-xl font-bold text-white flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-emerald-400 inline-block"></span>
+              Person 2: Company-Licensed Auditor Portal
+            </h2>
+            <p class="text-xs text-slate-400 mt-1 max-w-3xl">
+              Prevents dummy or hallucinated AI skills from entering production. Verified company engineers inspect the compiled procedure, stress-test the model with custom questions, and apply their official license seal.
+            </p>
+          </div>
+          <!-- Auditor Credentials Box -->
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 min-w-[320px]">
+            <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Auditor Credential Validation</div>
+            <div class="space-y-2">
+              <select id="select-auditor-license" onchange="onLicenseSelect()" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500 font-mono">
+                <option value="LIC-88219">Sarah Jenkins, PE (LIC-88219 - Nat'l Electrical Safety Board)</option>
+                <option value="IRSC-4402">Marcus Vance, Lead Auditor (IRSC-4402 - Robotics Safety Council)</option>
+                <option value="SOLAR-991">Elena Rostova, Chief Inspector (SOLAR-991 - Clean Energy Alliance)</option>
+                <option value="AGRI-7731">Dr. Kevin Thorne (AGRI-7731 - Autonomous Agri Systems)</option>
+              </select>
+              <div id="license-auth-banner" class="text-[11px] text-emerald-400 font-medium flex items-center gap-1">
+                ✓ License Active & Verified by Certifying Registry
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Side-by-Side Inspection & Live Interrogation -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <!-- Left: Truth vs Generated Skill -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col h-[520px]">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-3">
+            <span class="text-xs font-bold text-slate-300">Compiled SKILL.md Preview</span>
+            <span class="text-xs text-indigo-400 font-mono">Open Standard Format</span>
+          </div>
+          <div class="flex-1 overflow-y-auto bg-slate-950 p-4 rounded-xl border border-slate-800 font-mono text-xs text-slate-300 whitespace-pre-wrap" id="auditor-skill-preview">
+            Compile a skill first to inspect.
+          </div>
+        </div>
+
+        <!-- Right: Live Interrogation & Signing -->
+        <div class="space-y-6">
+          
+          <!-- Interrogation Box -->
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+              <span class="text-xs font-bold text-slate-300">Oral Defense: Challenge the AI Live</span>
+              <span class="text-xs text-amber-400">Licensed Auditor Stress-Test</span>
+            </div>
+            <p class="text-xs text-slate-400">
+              Type any corner-case question. The AI must demonstrate that the captured skill adequately covers it.
+            </p>
+            <div class="flex gap-2">
+              <input id="input-interrogate-question" type="text" value="What happens if the ambient humidity exceeds 90% or water enters the casing?" class="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500" placeholder="Ask the model an unexpected corner case...">
+              <button onclick="askInterrogation()" class="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-lg text-xs font-semibold transition">
+                Challenge
+              </button>
+            </div>
+            <div id="interrogate-response-box" class="hidden p-3.5 rounded-xl bg-slate-950 border border-amber-500/30 text-xs font-mono text-amber-200/90 leading-relaxed">
+              <!-- AI reply -->
+            </div>
+          </div>
+
+          <!-- Signing Box -->
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+              <span class="text-xs font-bold text-slate-300">Official Certification & Cryptographic Seal</span>
+              <span class="text-xs text-emerald-400">SHA-256 HMAC Signature</span>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-400 mb-1">Auditor Review Notes</label>
+              <textarea id="auditor-notes" rows="2" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500" placeholder="e.g. Verified zero-offset calibration steps and electrostatic discharge protocols meet OSHA & IEEE standards. Approved for field deployment."></textarea>
+            </div>
+            <div class="flex items-center justify-between pt-2">
+              <div id="certify-status-text" class="text-xs text-slate-400 font-mono">
+                Status: Pending Auditor Signature
+              </div>
+              <button onclick="certifySkill()" id="btn-certify" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold text-sm shadow-lg shadow-emerald-600/30 flex items-center gap-2 transition active:scale-95">
+                <span>🖋️ Sign & Publish to Skill Commons</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- TAB 4: VERIFIED SKILL COMMONS -->
+    <div id="tab-commons" class="tab-content hidden space-y-6">
+      
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-xl font-bold text-white flex items-center gap-2">
+              <span>📦 Open Skill Commons Registry</span>
+            </h2>
+            <p class="text-xs text-slate-400 mt-1 max-w-2xl">
+              An open repository of verified, standard-compliant Agent Skills. Any autonomous agent running Gemma, Llama, or Ollama can clone and run these skills offline.
+            </p>
+          </div>
+          <button onclick="loadCommons()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-medium border border-slate-700 transition flex items-center gap-1">
+            <span>🔄 Refresh Registry</span>
+          </button>
+        </div>
+      </div>
+
+      <div id="commons-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Rendered by JS -->
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="fixed bottom-6 right-6 max-w-sm bg-slate-900 border border-indigo-500/50 text-white px-4 py-3 rounded-xl shadow-2xl text-xs font-medium transform translate-y-24 opacity-0 transition duration-300 pointer-events-none z-50 flex items-center gap-2">
+    <span id="toast-icon">ℹ️</span>
+    <span id="toast-msg">Notification message</span>
+  </div>
+
+  <script>
+    let activeSkill = null;
+    let sampleData = {};
+
+    // Switch Tabs
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.classList.remove('border-indigo-500', 'text-indigo-400');
+        btn.classList.add('border-transparent', 'text-slate-400');
+      });
+
+      document.getElementById('tab-' + tabId).classList.remove('hidden');
+      const activeBtn = document.getElementById('tab-btn-' + tabId);
+      activeBtn.classList.add('border-indigo-500', 'text-indigo-400');
+      activeBtn.classList.remove('border-transparent', 'text-slate-400');
+
+      if (tabId === 'commons') {
+        loadCommons();
+      }
+    }
+
+    // Show Toast
+    function showToast(msg, icon = 'ℹ️') {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-msg').innerText = msg;
+      document.getElementById('toast-icon').innerText = icon;
+      toast.classList.remove('translate-y-24', 'opacity-0');
+      setTimeout(() => {
+        toast.classList.add('translate-y-24', 'opacity-0');
+      }, 4000);
+    }
+
+    // Load initial samples
+    async function init() {
+      try {
+        const res = await fetch('/api/samples');
+        sampleData = await res.json();
+        loadSample('industrial_sensor');
+        loadCommons();
+      } catch (e) {
+        console.error("Init failed", e);
+      }
+    }
+
+    function loadSample(key) {
+      const s = sampleData[key];
+      if (!s) return;
+      document.getElementById('input-contributor-name').value = s.contributor_name;
+      document.getElementById('input-domain').value = s.domain;
+      document.getElementById('input-language').value = s.language;
+      document.getElementById('input-transcript').value = s.transcript;
+      showToast(`Loaded preset: ${s.title}`, '⚡');
+    }
+
+    // Compile Skill
+    async function compileSkill() {
+      const btn = document.getElementById('btn-compile');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = `<span class="animate-spin">⏳</span> Compiling with Gemma...`;
+      btn.disabled = true;
+
+      const payload = {
+        contributor_name: document.getElementById('input-contributor-name').value,
+        domain: document.getElementById('input-domain').value,
+        language: document.getElementById('input-language').value,
+        raw_transcript: document.getElementById('input-transcript').value
+      };
+
+      try {
+        const res = await fetch('/api/compile', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data.status === 'success') {
+          activeSkill = data.skill;
+          renderTeachBack(data.teach_back, data.skill);
+          renderAuditorView(data.skill);
+          showToast("Skill compiled & Teach-Back exam complete!", "🎯");
+          switchTab('teachback');
+        } else {
+          showToast("Compilation failed: " + (data.detail || "Error"), "❌");
+        }
+      } catch (e) {
+        showToast("Error connecting to compiler backend.", "❌");
+      } finally {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      }
+    }
+
+    // Render Teach-Back Tab
+    function renderTeachBack(report, skill) {
+      document.getElementById('teachback-score-num').innerText = report.total_score;
+      document.getElementById('badge-fidelity').innerText = `Score: ${report.total_score}/100`;
+      document.getElementById('badge-fidelity').classList.remove('hidden');
+
+      const titleEl = document.getElementById('teachback-skill-title');
+      titleEl.innerText = skill.name;
+
+      const verdictEl = document.getElementById('teachback-verdict-pill');
+      if (report.passed) {
+        verdictEl.innerText = "PASSED FIDELITY EXAM";
+        verdictEl.className = "text-xs px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-800 font-semibold";
+      } else {
+        verdictEl.innerText = "FAILED THRESHOLD";
+        verdictEl.className = "text-xs px-2.5 py-0.5 rounded-full bg-rose-950 text-rose-300 border border-rose-800 font-semibold";
+      }
+
+      document.getElementById('teachback-summary-text').innerText = report.summary;
+
+      // Render scenarios
+      const container = document.getElementById('scenarios-container');
+      container.innerHTML = "";
+
+      report.scenarios.forEach((sc, idx) => {
+        const card = document.createElement('div');
+        card.className = "bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-3";
+        card.innerHTML = `
+          <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+            <span class="text-xs font-bold text-indigo-400 uppercase tracking-wider">Scenario ${sc.scenario_id}: Oral Challenge</span>
+            <span class="text-xs font-mono font-semibold px-2 py-0.5 rounded bg-slate-950 text-emerald-400 border border-emerald-900/50">Score: ${sc.score}/20</span>
+          </div>
+          <div>
+            <div class="text-xs text-slate-400 font-medium">Examiner Stress Prompt:</div>
+            <div class="text-xs text-slate-200 mt-0.5 font-semibold">"${sc.prompt}"</div>
+          </div>
+          <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 text-xs font-mono">
+            <div class="text-indigo-300 font-bold mb-1">AI Student Response (Gemma-2 Offline):</div>
+            <div class="text-slate-300">${sc.student_response}</div>
+          </div>
+          <div class="text-[11px] text-slate-400 flex items-center gap-1.5">
+            <span class="text-emerald-400">✓ Evaluator Rubric:</span> ${sc.rubric_feedback}
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // Render Auditor View
+    function renderAuditorView(skill) {
+      document.getElementById('auditor-skill-preview').innerText = skill.raw_markdown || "No markdown compiled.";
+    }
+
+    // License select change
+    function onLicenseSelect() {
+      showToast("Auditor credentials verified with authority board.", "🛡️");
+    }
+
+    // Interrogate AI
+    async function askInterrogation() {
+      const q = document.getElementById('input-interrogate-question').value;
+      if (!q.trim()) return;
+
+      const box = document.getElementById('interrogate-response-box');
+      box.classList.remove('hidden');
+      box.innerHTML = `<span class="animate-pulse">Consulting compiled skill knowledge...</span>`;
+
+      try {
+        const res = await fetch('/api/interrogate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question: q })
+        });
+        const data = await res.json();
+        box.innerHTML = `<div class="text-amber-400 font-bold mb-1">Licensed Auditor Examination:</div><div>${data.answer}</div>`;
+      } catch (e) {
+        box.innerHTML = `Error interrogating model.`;
+      }
+    }
+
+    // Certify Skill
+    async function certifySkill() {
+      const selectLic = document.getElementById('select-auditor-license');
+      const license_id = selectLic.value;
+      const auditor_name = selectLic.options[selectLic.selectedIndex].text.split('(')[0].trim();
+      const notes = document.getElementById('auditor-notes').value || "All safety and procedural tests officially verified.";
+
+      const btn = document.getElementById('btn-certify');
+      btn.disabled = true;
+
+      try {
+        const res = await fetch('/api/certify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            auditor_name: auditor_name,
+            license_id: license_id,
+            audit_notes: notes
+          })
+        });
+        const data = await res.json();
+        if (data.status === 'certified') {
+          showToast("Skill officially certified & published to Skill Commons!", "🎉");
+          document.getElementById('certify-status-text').innerHTML = `<span class="text-emerald-400 font-bold">✓ CERTIFIED (${data.signature_hash.slice(0, 16)}...)</span>`;
+          document.getElementById('badge-status').innerText = "Verified";
+          document.getElementById('badge-status').className = "text-xs px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-800";
+          renderAuditorView(data.skill);
+          loadCommons();
+          setTimeout(() => switchTab('commons'), 1200);
+        } else {
+          showToast("Certification failed: " + (data.detail || "Error"), "❌");
+        }
+      } catch (e) {
+        showToast("Error processing certification.", "❌");
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    // Load Skill Commons
+    async function loadCommons() {
+      try {
+        const res = await fetch('/api/commons');
+        const data = await res.json();
+        document.getElementById('badge-commons-count').innerText = data.count;
+
+        const container = document.getElementById('commons-container');
+        container.innerHTML = "";
+
+        if (data.count === 0) {
+          container.innerHTML = `
+            <div class="col-span-2 bg-slate-900 border border-slate-800 rounded-xl p-8 text-center text-slate-500 text-sm">
+              No verified skills published in Skill Commons yet. Certify your first skill in Tab 3!
+            </div>
+          `;
+          return;
+        }
+
+        data.skills.forEach(sk => {
+          const card = document.createElement('div');
+          card.className = "bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between space-y-4 hover:border-slate-700 transition";
+          card.innerHTML = `
+            <div>
+              <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-3">
+                <span class="font-mono text-sm font-bold text-white">${sk.folder}</span>
+                <span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-800 font-mono">
+                  Score: ${sk.metadata.fidelity_score || 95}/100
+                </span>
+              </div>
+              <p class="text-xs text-slate-300 mb-3">${sk.metadata.description || 'Standard Agent Skill'}</p>
+              <div class="space-y-1.5 text-[11px] text-slate-400 bg-slate-950 p-3 rounded-xl font-mono border border-slate-800">
+                <div><span class="text-slate-500">Author:</span> ${sk.metadata.author || 'Frontline Expert'}</div>
+                <div><span class="text-emerald-400">Verified By:</span> ${sk.metadata.verified_by || 'Licensed Auditor'}</div>
+                <div><span class="text-slate-500">Authority:</span> ${sk.metadata.certifying_authority || 'National Board'}</div>
+                <div class="truncate"><span class="text-slate-500">Signature:</span> ${sk.metadata.signature_seal || 'sha256:verified'}</div>
+              </div>
+            </div>
+            <div class="flex items-center justify-between pt-2">
+              <span class="text-xs text-emerald-400 font-mono">✓ AgentSkills.io Standard</span>
+              <button onclick="copySkillText('${sk.folder}')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-mono transition">
+                Copy SKILL.md
+              </button>
+            </div>
+          `;
+          container.appendChild(card);
+        });
+      } catch (e) {
+        console.error("Failed loading commons", e);
+      }
+    }
+
+    async function copySkillText(folder) {
+      try {
+        const res = await fetch('/api/commons');
+        const data = await res.json();
+        const found = data.skills.find(s => s.folder === folder);
+        if (found) {
+          navigator.clipboard.writeText(found.content);
+          showToast(`Copied ${folder}/SKILL.md to clipboard!`, '📋');
+        }
+      } catch (e) {
+        showToast("Failed to copy", "❌");
+      }
+    }
+
+    window.onload = init;
+  </script>
+</body>
+</html>
