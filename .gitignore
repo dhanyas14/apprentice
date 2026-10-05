@@ -1,10 +1,15 @@
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.env
-.venv
-env/
-venv/
-*.log
-.DS_Store
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+Thumbs.db
+
+# Python
+.pytest_cache/
+.coverage
+dist/
+build/
+*.egg-info/
