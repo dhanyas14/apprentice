@@ -174,13 +174,3 @@ apprentice/
 ├── run.py                  # Main entrypoint
 └── README.md
 ```
-
----
-
-## 🏆 MLH Hackathon Demo Checklist
-- [x] Uses Open-Weight AI (Gemma 2 / Ollama)
-- [x] Standard-compliant Agent Skills output (`agentskills.io`)
-- [x] Real-time Teach-Back Oral Exam with quantitative fidelity scoring
-- [x] Dual-human Trust Loop: Contributor $\to$ AI $\to$ Licensed Auditor
-- [x] Cryptographic SHA-256 HMAC verification seals
-- [x] Apache-2.0 open-source license + Public GitHub structure
