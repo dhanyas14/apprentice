@@ -136,7 +136,6 @@ ollama pull gemma2:9b
 # Apprentice will automatically detect Ollama at http://localhost:11434
 python run.py
 ```
-*(Note: If Ollama is offline or warming up, Apprentice gracefully falls back to its built-in semantic extractor so demos never stall!)*
 
 ---
 
