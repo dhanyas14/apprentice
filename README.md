@@ -72,7 +72,7 @@ The results yield an objective **Skill Fidelity Score (0-100)**. Skills scoring 
 
 ## 📦 Verified Skill Commons
 
-Once approved by Person 2, skills are saved to `skills_commons/<skill-name>/SKILL.md` with full cryptographic frontmatter:
+Once approved by Person 2 so that other can belive, skills are saved to `skills_commons/<skill-name>/SKILL.md` with full cryptographic frontmatter:
 
 ```yaml
 ---
